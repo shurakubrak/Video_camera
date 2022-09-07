@@ -63,7 +63,6 @@ void Video::setCamera(const QCameraDevice &cameraDevice)
 
     connect(ui->bttnSettings, SIGNAL(clicked()), this, SLOT(showSettings()));
     connect(ui->takeImageButton, SIGNAL(clicked()), this, SLOT(takeImage()));
-    connect(ui->expoComp, SIGNAL(valueChanged(int)), this, SLOT(setExpComp(int)));
     connect(ui->bttnRecord, SIGNAL(clicked()), this, SLOT(record()));
     connect(ui->bttnPause, SIGNAL(clicked()), this, SLOT(pause()));
     connect(ui->bttnStop, SIGNAL(clicked()), this, SLOT(stop()));
@@ -104,11 +103,6 @@ void Video::takeImage()
         m_isCapturingImage = true;
         m_imageCapture->captureToFile(strFileName);
     }
-}
-
-void Video::setExpComp(int value)
-{
-    m_camera->setExposureCompensation(value * 0.5);
 }
 
 void Video::record()

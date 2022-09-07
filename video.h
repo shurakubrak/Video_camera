@@ -39,7 +39,6 @@ private slots:
     void updateCamera();
     void setCamera(const QCameraDevice &cameraDevice);
     void readyForCapture(bool ready);
-    void setExpComp(int value);
     void record();
     void updateRecordTime(qint64 tm);
     void pause();
