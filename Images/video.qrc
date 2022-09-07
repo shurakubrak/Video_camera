@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>shutter.svg</file>
+        <file>pictures.ico</file>
+    </qresource>
+</RCC>
