@@ -8,6 +8,7 @@
 #include <QMediaRecorder>
 #include "metadatadialog.h"
 #include "settings.h"
+#include "pgsql/include/libpq-fe.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Video; }
@@ -46,8 +47,11 @@ private slots:
     void mdShow();
     void saveMetaData();
     void showSettings();
+    void sqlOpen();
 protected:
     void closeEvent(QCloseEvent *event) override;
     void saveSettings();
+    PGconn* pgConnect(PGconn* conn);
+    int pgExec(std::string qSQL, PGconn *conn);
 };
 #endif // VIDEO_H

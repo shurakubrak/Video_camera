@@ -2,6 +2,7 @@
 #include "ui_video.h"
 #include "settings.h"
 #include "sqlite_db.h"
+#include "pgsql/include/libpq-fe.h"
 #include <QVideoWidget>
 #include <QMediaDevices>
 #include <QImageCapture>
@@ -9,6 +10,10 @@
 #include <QFileDialog>
 #include <QCloseEvent>
 #include <QCheckBox>
+#include <QSqlDatabase>
+#include <iostream>
+#include <QSqlQuery>
+#include <QSqlError>
 
 Video::Video(QWidget *parent)
     : QMainWindow(parent)
@@ -67,6 +72,7 @@ void Video::setCamera(const QCameraDevice &cameraDevice)
     connect(ui->bttnPause, SIGNAL(clicked()), this, SLOT(pause()));
     connect(ui->bttnStop, SIGNAL(clicked()), this, SLOT(stop()));
     connect(ui->bttnMetadata, SIGNAL(clicked()), this, SLOT(mdShow()));
+    connect(ui->bttnDB, SIGNAL(clicked()), this, SLOT(sqlOpen()));
     readyForCapture(m_imageCapture->isReadyForCapture());
 
     if(m_camera->cameraFormat().isNull()){
@@ -216,4 +222,111 @@ void Video::saveSettings()
     }
         db.close_db();
     }
+}
+
+void Video::sqlOpen()
+{
+//    QString res;
+//    QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL", "pq_db");
+//    db.setDatabaseName("rtls");
+//    db.setHostName("172.16.26.215");
+//    db.setUserName("postgres");
+//    db.setPassword("pgadmin");
+//    db.setPort(5432);
+//    if(db.open()){
+//        QSqlQuery qr;
+//        if(qr.exec("select * from s_type_msg")){
+//            while(qr.next()){
+//                res = qr.value(0).toString();
+//                res = qr.value(1).toString();
+//            }
+//        }
+//        else{
+//            QSqlError lastError = qr.lastError();
+//            qDebug() << "query error: " << lastError.text();
+//        }
+//    }
+//    else{
+//        QSqlError lastError = db.lastError();
+//        qDebug() << "open DB error: " << lastError.text();
+//    }
+    /*Postres*/
+    PGconn *conn = nullptr;
+    conn = pgConnect(conn);
+    if(conn == nullptr){
+        qDebug() << "Postgres connect Ok";
+        return;
+    }
+    std::string query = "select * from s_type_msg";
+    int r = pgExec(query, conn);
+    if(r!=0)
+        return;
+    if (PQstatus(conn) == CONNECTION_OK) {
+        PGresult *res = PQexec(conn, query.c_str());
+        if (PQresultStatus(res) == PGRES_TUPLES_OK)
+            PQclear(res);
+        else {
+            PQclear(res);
+            PQfinish(conn);
+            conn = pgConnect(conn);
+            if (conn) {
+                if (PQstatus(conn) == CONNECTION_OK) {
+                    res = PQexec(conn, query.c_str());
+                    PQclear(res);
+                }
+            }
+        }
+    }
+}
+
+PGconn* Video::pgConnect(PGconn* conn)
+{
+    std::string pghost = "172.16.26.215";
+    std::string pgport = "5432";
+    std::string pgoptions = "";
+    std::string pgtty = "";
+    std::string dbName = "rtls";
+    std::string login = "postgres";
+    std::string pwd = "pgadmin";	//"pgadmin";
+
+    conn = PQsetdbLogin(pghost.c_str(),
+                pgport.c_str(),
+                pgoptions.c_str(),
+                pgtty.c_str(),
+                dbName.c_str(),
+                login.c_str(),
+                pwd.c_str());
+
+    if (PQstatus(conn) != CONNECTION_OK && PQsetnonblocking(conn, 1) != 0) {
+        std::string err = PQerrorMessage(conn);
+        qDebug() << "PostgreSQL eroor: " << err.c_str();
+            return nullptr;
+    }
+    return conn;
+}
+
+int Video::pgExec(std::string qSQL, PGconn *conn)
+{
+    if (qSQL.empty())
+        return -1;
+
+    if (PQstatus(conn) == CONNECTION_OK) {
+        PGresult *res = PQexec(conn, qSQL.c_str());
+        switch (PQresultStatus(res))
+        {
+        case PGRES_COMMAND_OK:
+            PQclear(res);
+            return PGRES_COMMAND_OK;
+        case PGRES_TUPLES_OK:
+            return PGRES_TUPLES_OK;
+        case PGRES_FATAL_ERROR:
+            qDebug() << "ERR: Query fail";
+            PQclear(res);
+            return PGRES_FATAL_ERROR;
+        default:
+            PQclear(res);
+            break;
+        }
+    }
+    return -1;
 }

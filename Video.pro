@@ -40,8 +40,19 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 QT += widgets
 include(C:/Qt/Examples/Qt-6.3.1/multimedia/shared/shared.pri)
 
+QT += sql
+
 DISTFILES +=
 
 RESOURCES += \
     Images/video.qrc
 
+
+
+win32: LIBS += -L$$PWD/pgsql/lib/ -llibpq
+
+#INCLUDEPATH += $$PWD/pgsql/include
+DEPENDPATH += $$PWD/pgsql/lib
+
+#win32:!win32-g++: PRE_TARGETDEPS += $$PWD/pgsql/lib/libpq.lib
+#else:win32-g++: PRE_TARGETDEPS += $$PWD/pgsql/lib/liblibpq.a
