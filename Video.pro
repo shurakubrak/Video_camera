@@ -13,8 +13,11 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    anchor.cpp \
+    danchors.cpp \
     main.cpp \
     metadatadialog.cpp \
+    qtableviewmodel.cpp \
     settings.cpp \
     sqlite-amalgama/shell.c \
     sqlite-amalgama/sqlite3.c \
@@ -22,7 +25,10 @@ SOURCES += \
     video.cpp
 
 HEADERS += \
+    anchor.h \
+    danchors.h \
     metadatadialog.h \
+    qtableviewmodel.h \
     settings.h \
     sqlite-amalgama/sqlite3.h \
     sqlite-amalgama/sqlite3ext.h \
@@ -30,6 +36,7 @@ HEADERS += \
     video.h
 
 FORMS += \
+    danchors.ui \
     video.ui
 
 # Default rules for deployment.
