@@ -9,6 +9,7 @@
 #include "metadatadialog.h"
 #include "settings.h"
 #include "danchors.h"
+#include "dtable.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -36,6 +37,7 @@ private:
     MetaDataDialog *m_mdDialog = nullptr;
     Settings *m_Sett = nullptr;
     dAnchors *m_Anchors = nullptr;
+    dTable *m_tableW = nullptr;
 
 private slots:
     void takeImage();
@@ -50,6 +52,7 @@ private slots:
     void saveMetaData();
     void showSettings();
     void showAnchors();
+    void showTableW();
 protected:
     void closeEvent(QCloseEvent *event) override;
     void saveSettings();

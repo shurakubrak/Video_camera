@@ -15,6 +15,7 @@ CONFIG += c++17
 SOURCES += \
     anchor.cpp \
     danchors.cpp \
+    dtable.cpp \
     main.cpp \
     metadatadialog.cpp \
     qtableviewmodel.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
 HEADERS += \
     anchor.h \
     danchors.h \
+    dtable.h \
     metadatadialog.h \
     qtableviewmodel.h \
     settings.h \
@@ -37,6 +39,7 @@ HEADERS += \
 
 FORMS += \
     danchors.ui \
+    dtable.ui \
     video.ui
 
 # Default rules for deployment.

@@ -73,6 +73,7 @@ void Video::setCamera(const QCameraDevice &cameraDevice)
     connect(ui->bttnMetadata, SIGNAL(clicked()), this, SLOT(mdShow()));
     connect(ui->bttnSettings, SIGNAL(clicked()), this, SLOT(showSettings()));
     connect(ui->bttnPG, SIGNAL(clicked()), this, SLOT(showAnchors()));
+    connect(ui->bttnPGW, SIGNAL(clicked()), this, SLOT(showTableW()));
     readyForCapture(m_imageCapture->isReadyForCapture());
 
     if(m_camera->cameraFormat().isNull()){
@@ -198,6 +199,14 @@ void Video::showAnchors()
         m_Anchors = new dAnchors(this);
     m_Anchors->setAttribute(Qt::WA_DeleteOnClose, false);
     m_Anchors->show();
+}
+
+void Video::showTableW()
+{
+    if(!m_tableW)
+        m_tableW = new dTable(this);
+    m_tableW->setAttribute(Qt::WA_DeleteOnClose, false);
+    m_tableW->show();
 }
 
 void Video::saveSettings()

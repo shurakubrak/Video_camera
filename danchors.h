@@ -3,7 +3,6 @@
 
 #include <QDialog>
 #include "anchor.h"
-#include "pgsql/include/libpq-fe.h"
 #include "qtableviewmodel.h"
 #include <QList>
 #include "pgsql/include/libpq-fe.h"

@@ -13,6 +13,7 @@ dAnchors::dAnchors(QWidget *parent) :
         qDebug() << "Postgres connect Ok";
     else
         sqlFillData();
+
 }
 
 dAnchors::~dAnchors()
