@@ -1,11 +1,13 @@
 #include "dtable.h"
 #include "ui_dtable.h"
+#include <QMessageBox>
 
 dTable::dTable(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::dTable)
 {
     ui->setupUi(this);
+
     m_conn = pgConnect(m_conn);
     if(m_conn == nullptr)
         qDebug() << "Postgres connect Ok";
@@ -16,6 +18,9 @@ dTable::dTable(QWidget *parent) :
                   << "server_addr"
                   << "server_port");
         sqlFillData();
+        connect(ui->tableWidget, SIGNAL(cellChanged(int,int)), this, SLOT(cellUpdate(int, int)));
+        connect(ui->bttnAdd, SIGNAL(clicked()), this, SLOT(on_bttnAdd()));
+        connect(ui->bttnDelete, SIGNAL(clicked()), this, SLOT(on_bttnDelete()));
     }
 }
 
@@ -85,4 +90,27 @@ void dTable::sqlFillData()
             }
         }
     }
+}
+
+void dTable::cellUpdate(int row, int col)
+{
+    QMessageBox msgB;
+    msgB.setIcon(QMessageBox::Icon::Information);
+    msgB.setWindowTitle("cell updated");
+    msgB.setText("Row: " + QString().number(row)
+                 + "  Col: " + QString().number(col)
+                 + " value: " + ui->tableWidget->item(row, col)->text());
+    msgB.exec();
+}
+
+void dTable::on_bttnAdd()
+{
+    ui->tableWidget->insertRow(ui->tableWidget->rowCount());
+    ui->tableWidget->setCurrentCell(ui->tableWidget->rowCount()-1, 1);
+}
+
+void dTable::on_bttnDelete()
+{
+    if(ui->tableWidget->currentRow()>0)
+        ui->tableWidget->removeRow(ui->tableWidget->currentRow());
 }

@@ -22,6 +22,10 @@ private:
     PGconn* pgConnect(PGconn* conn);
     void sqlFillData();
     void settTable(QStringList &headers);
+private slots:
+    void cellUpdate(int row, int col);
+    void on_bttnAdd();
+    void on_bttnDelete();
 };
 
 #endif // DTABLE_H
